@@ -20,7 +20,7 @@ public:
 
     virtual void printType() const = 0;
     virtual std::complex<double> impedance(double frequency) const = 0;
-    virtual double powerLoss(double current) const = 0;
+    virtual double powerLoss(double current, double frequency = 50.0) const = 0;
 };
 
 // basic comps
@@ -32,7 +32,7 @@ public:
     explicit Resistor(double value);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
-    double powerLoss(double current) const override;
+    double powerLoss(double current, double frequency = 50.0) const override;
 };
 
 class Capacitor : public Component {
@@ -42,7 +42,7 @@ public:
     explicit Capacitor(double value);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
-    double powerLoss(double current) const override;
+    double powerLoss(double current, double frequency = 50.0) const override;
 };
 
 class Inductor : public Component {
@@ -52,7 +52,7 @@ public:
     explicit Inductor(double value);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
-    double powerLoss(double current) const override;
+    double powerLoss(double current, double frequency = 50.0) const override;
 };
 
 // composite components (lol. buttery butter)
@@ -64,7 +64,7 @@ public:
     void add(std::shared_ptr<Component> comp);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
-    double powerLoss(double current) const override;
+    double powerLoss(double current, double frequency = 50.0) const override;
 };
 
 class ParallelCircuit : public Component {
@@ -74,7 +74,7 @@ public:
     void add(std::shared_ptr<Component> comp);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
-    double powerLoss(double current) const override;
+    double powerLoss(double current, double frequency = 50.0) const override;
 };
 
 }

@@ -42,7 +42,7 @@ std::complex<double> Inductor::impedance(double frequency) const {
     return std::complex<double>(0.0, 2.0 * M_PI * frequency * value_);
 }
 
-double Inductor::powerLoss(double _) const {
+double Inductor::powerLoss(double current, double frequency) const {
     return 0.0;  // ideal inductor has no real power loss
 }
 

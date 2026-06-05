@@ -40,7 +40,7 @@ std::complex<double> Resistor::impedance(double _) const { // don't need frequen
     return std::complex<double>(value_, 0.0); // a resistor does not store any energy so the imaginary part is always zero.
 }
 
-double Resistor::powerLoss(double current) const {
+double Resistor::powerLoss(double current, double frequency) const {
     return current * current * value_;  // P = I^2 * R
 }
 

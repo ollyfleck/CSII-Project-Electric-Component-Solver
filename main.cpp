@@ -1,8 +1,6 @@
 #include "logic.h"
 #include <iostream>
 #include <iomanip>
-#include <memory>
-#include <string.h>
 #include <vector>
 
 int main() {
@@ -49,7 +47,7 @@ int main() {
     for (auto* c : circuits) {
         c->printType();
         std::complex<double> z = c->impedance(frequency);
-        double power = c->powerLoss(current);
+        double power = c->powerLoss(current, frequency);
         std::cout << "  Impedance      Z = (" << z.real() << ", j" << z.imag() << ") Ohm";
         std::cout << "\n  Power loss     P = " << power << " W\n";
     }

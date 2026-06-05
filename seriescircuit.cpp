@@ -57,10 +57,10 @@ std::complex<double> SeriesCircuit::impedance(double frequency) const {
     For a pure resistor: fi = 0deg -> P = I^2 * R.
     For an ideal capacitor or inductor: fi = ±90deg -> P = 0.
 **/
-double SeriesCircuit::powerLoss(double current) const {
+double SeriesCircuit::powerLoss(double current, double frequency) const {
     double total = 0.0;
     for (const auto& comp : subcomponents_) {
-        total += comp->powerLoss(current);
+        total += comp->powerLoss(current, frequency);
     }
     return total;
 }

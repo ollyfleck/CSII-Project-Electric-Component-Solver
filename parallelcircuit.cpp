@@ -72,8 +72,8 @@ std::complex<double> ParallelCircuit::impedance(double frequency) const {
     branch determines the fraction of apparent power that becomes real power:
       P_avg = V_rms * I_rms * cos(fi)
 **/
-double ParallelCircuit::powerLoss(double current) const {
-    std::complex<double> zTotal = impedance(50.0);
+double ParallelCircuit::powerLoss(double current, double frequency) const {
+    std::complex<double> zTotal = impedance(frequency);
 
     // V = I * |Z| gives the magnitude of voltage across the parallel combination
     double vMag = current * std::abs(zTotal);
@@ -81,11 +81,11 @@ double ParallelCircuit::powerLoss(double current) const {
     // For each subcomponent, compute I_i = V / |Z_i| and sum power losses
     double totalPower = 0.0;
     for (const auto& comp : subcomponents_) {
-        std::complex<double> zComp = comp->impedance(50.0);
+        std::complex<double> zComp = comp->impedance(frequency);
         if (std::abs(zComp) < 1e-20) continue;
 
         double iMag = vMag / std::abs(zComp);
-        totalPower += comp->powerLoss(iMag);
+        totalPower += comp->powerLoss(iMag, frequency);
     }
 
     return totalPower;
