@@ -4,7 +4,7 @@
 
 namespace Circuits {
 
-void SeriesCircuit::add(std::shared_ptr<Component> comp) {
+void SeriesCircuit::add(Component* comp) {
     subcomponents_.push_back(comp);
 }
 

@@ -3,17 +3,18 @@
 #include <iomanip>
 #include <vector>
 
+using namespace Circuits;
+
 int main() {
     // the ac waveform
     double frequency  = 50.0;   // Hz
     double current    = 2.0;    // A
 
     // basic components: 100 ohm resistor, 10 uF capacitor, 50 mH inductor
-    // note for future self: learn how exactly make_shared works its actually pretty useful
-    auto r1 = std::make_shared<Circuits::Resistor>(100.0);
-    auto r2 = std::make_shared<Circuits::Resistor>(200.0);
-    auto c1 = std::make_shared<Circuits::Capacitor>(10e-6);     // 10 uF
-    auto l1 = std::make_shared<Circuits::Inductor>(50e-3);      // 50 mH
+    Resistor r1(100.0);
+    Resistor r2(200.0);
+    Capacitor c1(10e-6);     // 10 uF
+    Inductor l1(50e-3);      // 50 mH
 
     /*
     std::cout << "R1 impedance real " << std::to_string(r1->impedance(frequency).real()) << std::endl;
@@ -25,16 +26,17 @@ int main() {
     std::cout << "L1 impedance real " << std::to_string(l1->impedance(frequency).real()) << std::endl; // should be 0
     std::cout << "L1 impedance imag " << std::to_string(l1->impedance(frequency).imag()) << std::endl;
     */ // why did I even do this, I can just use the debugger lol
+    // irrelevant anyway now
 
     // series RC circuit
     Circuits::SeriesCircuit series;
-    series.add(r1);
-    series.add(c1);
+    series.add(&r1);
+    series.add(&c1);
 
     // parallel RL circuit
     Circuits::ParallelCircuit parallel;
-    parallel.add(l1);
-    parallel.add(r2);
+    parallel.add(&l1);
+    parallel.add(&r2);
 
 
     // store the circuits 

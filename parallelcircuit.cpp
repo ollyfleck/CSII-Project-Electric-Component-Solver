@@ -3,7 +3,7 @@
 
 namespace Circuits {
 
-void ParallelCircuit::add(std::shared_ptr<Component> comp) {
+void ParallelCircuit::add(Component* comp) {
     subcomponents_.push_back(comp); // is this boilerplate code that I looked up a tutorial for? yes. 
 }
 

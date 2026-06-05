@@ -4,7 +4,6 @@
 #include <cmath>
 #include <complex>
 #include <iostream>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -59,9 +58,9 @@ public:
 
 class SeriesCircuit : public Component {
 private:
-    std::vector<std::shared_ptr<Component>> subcomponents_;
+    std::vector<Component*> subcomponents_;
 public:
-    void add(std::shared_ptr<Component> comp);
+    void add(Component* comp);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
     double powerLoss(double current, double frequency = 50.0) const override;
@@ -69,9 +68,9 @@ public:
 
 class ParallelCircuit : public Component {
 private:
-    std::vector<std::shared_ptr<Component>> subcomponents_;
+    std::vector<Component*> subcomponents_;
 public:
-    void add(std::shared_ptr<Component> comp);
+    void add(Component* comp);
     void printType() const override;
     std::complex<double> impedance(double frequency) const override;
     double powerLoss(double current, double frequency = 50.0) const override;
