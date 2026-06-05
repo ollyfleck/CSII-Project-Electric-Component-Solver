@@ -1,14 +1,29 @@
 {
   "version": "0.2.0",
-  "configurations": [{
-    "name": "Debug",
-    "type": "cppdbg",
-    "request": "launch",
-    "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
-    "stopAtEntry": false,
-    "cwd": "${fileDirname}",
-    "MIMode": "gdb",
-    "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
-    "preLaunchTask": "C/C++: g++.exe build active file"
-  }]
+  "configurations": [
+    {
+      "name": "Debug (circuit.exe)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\build\\circuit.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+      "preLaunchTask": "C/C++: g++.exe build all"
+    },
+    {
+      "name": "Debug (active file)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+      "preLaunchTask": "C/C++: g++.exe build active file"
+    }
+  ]
 }

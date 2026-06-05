@@ -55,4 +55,26 @@ public:
     double powerLoss(double current) const override;
 };
 
+// composite components (lol. buttery butter)
+
+class SeriesCircuit : public Component {
+private:
+    std::vector<std::shared_ptr<Component>> subcomponents_;
+public:
+    void add(std::shared_ptr<Component> comp);
+    void printType() const override;
+    std::complex<double> impedance(double frequency) const override;
+    double powerLoss(double current) const override;
+};
+
+class ParallelCircuit : public Component {
+private:
+    std::vector<std::shared_ptr<Component>> subcomponents_;
+public:
+    void add(std::shared_ptr<Component> comp);
+    void printType() const override;
+    std::complex<double> impedance(double frequency) const override;
+    double powerLoss(double current) const override;
+};
+
 }
