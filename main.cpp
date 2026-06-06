@@ -14,7 +14,7 @@ int main() {
     Resistor r1(100.0);
     Resistor r2(200.0);
     Capacitor c1(10e-6);     // 10 uF
-    Inductor l1(50e-3);      // 50 mH
+    Inductor l1(50e-3);      // 50 mH which is actually 0.050000000000000003 according to the debugger. IEEE-754 moment lol
 
     /*
     std::cout << "R1 impedance real " << std::to_string(r1->impedance(frequency).real()) << std::endl;
@@ -31,15 +31,15 @@ int main() {
     // series RC circuit
     Circuits::SeriesCircuit series;
     series.add(&r1);
-    series.add(&c1);
+    series.add(&c1); // this will add a negative imaginary component to the impedance.
 
     // parallel RL circuit
     Circuits::ParallelCircuit parallel;
-    parallel.add(&l1);
+    parallel.add(&l1); // this will add a positive imaginary component to the impedance
     parallel.add(&r2);
 
 
-    // store the circuits 
+    // store the circuits polymorphically. why? the document says so, so sure. 
     std::vector<Circuits::Component*> circuits = {&series, &parallel};
 
     std::cout << "~~~~ AC Circuit Simulation ~~~~" << std::endl; // hehe get it? cause the ac waveform? ~

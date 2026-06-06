@@ -36,11 +36,13 @@ void Resistor::printType() const {
     std::cout << "Resistor(" << value_ << " Ohm)" << std::endl;
 }
 
-std::complex<double> Resistor::impedance(double _) const { // don't need frequency. yes. this adds a warning.
+std::complex<double> Resistor::impedance(double frequency_) const {
+    (void)frequency_; // there. used parameter
     return std::complex<double>(value_, 0.0); // a resistor does not store any energy so the imaginary part is always zero.
 }
 
-double Resistor::powerLoss(double current, double frequency) const {
+double Resistor::powerLoss(double current, double frequency_) const {
+    (void)frequency_;
     return current * current * value_;  // P = I^2 * R
 }
 

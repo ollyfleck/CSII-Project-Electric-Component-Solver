@@ -39,7 +39,9 @@ std::complex<double> Capacitor::impedance(double frequency) const {
     return std::complex<double>(0.0, -1 / (2.0 * M_PI * frequency * value_));
 }
 
-double Capacitor::powerLoss(double current, double frequency) const { // these parameters are unused but I don't think anybody will care
+double Capacitor::powerLoss(double current_, double frequency_) const { // these parameters are unused but I don't think anybody will care
+    (void)frequency_;
+    (void)current_;
     return 0.0;  // ideal capacitor has no real power loss, since resistance between the plates is ideally infinite
 }
 
