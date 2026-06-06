@@ -1,0 +1,182 @@
+% !TEX root = report.tex
+
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{csvsimple}
+\usepackage{booktabs}
+\usepackage{placeins}
+\usepackage{amsmath}
+\usepackage{gensymb}
+\usepackage[T1]{fontenc}
+
+\title{Computer Science II Project Report}
+\author{Oliwier Fr\k{a}czek 345307}
+
+\begin{document}
+\maketitle
+
+    \section{Purpose of project}
+    The goal of this project was to create a program capable of calculating various parameters of circuits powered by alternating current (AC).
+    The program models electrical components and circuits using object-oriented programming principles, specifically inheritance and polymorphism.
+    It computes impedance and power loss for individual components as well as composite circuits (series and parallel configurations).
+
+    \section{Class design}
+    The program is built around a class hierarchy that is derived from a base class \texttt{Component}. All electrical components inherit from this base class,
+    which defines three pure virtual functions that every derived class must implement:
+    
+    \begin{equation*}
+        \texttt{virtual void printType()}
+    \end{equation*}
+    \begin{equation*}
+        \texttt{virtual std::complex<double> impedance(double frequency)}
+    \end{equation*}
+    \begin{equation*}
+        \texttt{virtual double powerLoss(double current, double frequency)}
+    \end{equation*}
+
+    Through polymorhpism, different component types can be stored in a single container and their impedance or power loss can be computed without knowing their type at compile time.
+
+    The hierarchy consists of the following classes:
+
+    \subsection{Basic components}
+    Three concrete classes representing ideal electrical elements:
+
+    \begin{description}
+        \item[\texttt{Resistor}] Represents resistance $R$ measured in ohms ($\Omega$). Its impedance is purely real and independent of frequency.
+        
+        \item[\texttt{Capacitor}] Represents capacitance $C$ measured in farads (F). Its impedance is purely imaginary and frequency-dependent:
+        \begin{equation}
+            Z_C = -j \cdot \frac{1}{2\pi f C}
+        \end{equation}
+        At DC ($f = 0$), the capacitor behaves as an open circuit. As frequency approaches infinity, impedance approaches zero (short circuit).
+
+        \item[\texttt{Inductor}] Represents inductance $L$ measured in henries (H). Its impedance is purely imaginary and positive:
+        \begin{equation}
+            Z_L = j \cdot 2\pi f L
+        \end{equation}
+        As $f$ approaches infinity, so does the entire expression, which means the impedance grows and eventually becomes infinite (open circuit), and this is consistent with physical intuition. 
+    \end{description}
+
+    \subsection{Composite components}
+    Two classes representing combinations of basic components:
+
+    \begin{description}
+        \item[\texttt{SeriesCircuit}] A container that holds a collection of component pointers. The total impedance is the sum of all individual impedances:
+        \begin{equation}
+            Z_{\text{series}} = \sum_i Z_i
+        \end{equation}
+
+        \item[\texttt{ParallelCircuit}] A container for components connected in parallel. The equivalent impedance is given by:
+        \begin{equation}
+            Z_{\text{parallel}} = \left( \sum_i \frac{1}{Z_i} \right)^{-1}
+        \end{equation}
+    \end{description}
+
+    The full class hierarchy can be summarized as follows:
+
+    \begin{center}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Class} & \textbf{Parent} & \textbf{Description} \\
+        \hline
+        Component & - & Abstract base class \\
+        Resistor & Component & Real impedance $Z = R$ \\
+        Capacitor & Component & Imaginary impedance $Z_C$ \\
+        Inductor & Component & Imaginary impedance $Z_L$ \\
+        SeriesCircuit & Component & $\sum Z_i$ \\
+        ParallelCircuit & Component & $(\sum 1/Z_i)^{-1}$ \\
+        \hline
+    \end{tabular}
+    \end{center}
+
+    These composite components essentially act as one big component with special logic.
+
+    \FloatBarrier
+    \section{Results of measurements}
+    The program was tested with the following component values and circuit configuration:
+
+    \begin{table}[h]
+        \centering
+        \caption{Input parameters}
+        \begin{tabular}{lll}
+            \hline
+            Parameter & Value & Unit \\
+            \hline
+            Frequency ($f$) & 50.0 & Hz \\
+            Current ($I$) & 2.0 & A \\
+            $R_1$ & 100.0 & $\Omega$ \\
+            $R_2$ & 200.0 & $\Omega$ \\
+            $C_1$ & 10.0 & $\mu$F \\
+            $L_1$ & 50.0 & mH \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    Results of the simulation are as follows:
+
+    \begin{table}[h]
+        \centering
+        \caption{Computed circuit parameters}
+        \begin{tabular}{lll}
+            \hline
+            Circuit & Impedance $Z$ & Power loss \\
+            & & $P$ (W) \\
+            \hline
+            SeriesCircuit(R1, C1) & $(100\; -318.31)$ $\Omega$ & 400W \\
+            ParallelCircuit(L1, R2) & $(1.22614\; 15.6117)$ $\Omega$ & 4.90455W \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    The series circuit combining the resistor and capacitor produces a negative imaginary component in impedance, consistent with capacitive reactance.
+    The parallel circuit of the inductor and resistor yields a much smaller magnitude impedance due to the parallel configuration of the components.
+
+    \section{C++ features used}
+    \subsection{Pointers and dynamic allocation}
+    The program primarily uses raw pointers. Components are created on the stack but stored as pointers to base class:
+    
+    \begin{equation*}
+        \texttt{std::vector<Component*> circuits = \{\&series, \&parallel\};}
+    \end{equation*}
+
+    \subsection{Inheritance and polymorphism}
+    All concrete component types inherit from the abstract \texttt{Component} class, using virtual function overriding for behaviour definition:
+    
+    \begin{equation*}
+        \texttt{virtual std::complex<double> impedance(double frequency) const override;}
+    \end{equation*}
+
+    This allows for iterating over a collection of components of various types, and calling the same method without type checking.
+
+    \subsection{Complex number support}
+    The program uses \texttt{std::complex<double>} from $<\texttt{complex}>$ to represent impedance in rectangular form $(R, jX)$, where $R$ is resistance and $X$ is reactance.
+    This avoids manual handling of real and imaginary parts separately.
+
+    \subsection{Pure virtual functions}
+    The base class \texttt{Component} contains no data members, it's a scaffold for building classes derived from it. All three member functions are pure virtual, making the class abstract and preventing instantiation directly:
+    
+    \begin{equation*}
+        \texttt{virtual ~Component() = default; // throws a compiler error}
+    \end{equation*}
+
+    The destructor is also declared virtual to ensure proper cleanup when deleting through base pointers.
+
+    \subsection{Operator overloading}
+    A notable feature of this design is the use of operator overloading on the base class, demonstrated in main.cpp:
+
+    \begin{equation*}
+        \texttt{r1->impedance(frequency)}
+    \end{equation*}
+
+    The arrow operator is implicitly overloaded via pointers to enable member access through Component*, allowing clean syntax when accessing component properties. 
+
+    \section{AI detection}
+    This project will be put through an AI detection tool - I would like to talk about the efficacy of those tools.
+    First of all, the vast majority of those tools are glorified data harvesting schemes.
+    They use the collected data to train "AI humanizing" tools which attempt to make AI generated content appear more human, or simply sell the data to companies which will do the same.
+    I wanted to perform an experiment, to that end, I have fed my project to an AI agent in order to create a detailed cleanroom rewrite spec. Using this spec, I then asked another agent to rewrite the whole project from scratch.
+    The 2nd agent never saw the original source code - only the specification document. 
+    Any AI detection tools worth their salt should be able to easily distinguish between the two, if they cannot - that just goes to show they are completely useless at what they purport to do.
+
+\end{document}
